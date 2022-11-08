@@ -35,28 +35,42 @@ Robot {
   name "robot display"
   controller "display"
 }
-Robot {
+DEF CAMERA Robot {
   translation 0 0.2 -0.2
   rotation 0 1 0 3.1413
   children [
-    DistanceSensor {
+    Receiver {
+    }
+    Emitter {
     }
     Camera {
-      fieldOfView 0.65
+      fieldOfView 0.66
       width 4000
       height 3000
       lens Lens {
         radialCoefficients -0.2 -0.1
       }
       focus Focus {
-        focalDistance 0.14
-        focalLength 0.1
+        focalDistance 0.6
+        focalLength 0.4
         maxFocalDistance 1
         minFocalDistance 0.1
       }
     }
   ]
+  name "robot camera"
   controller "camera"
+}
+Robot {
+  children [
+    Receiver {
+    }
+    Emitter {
+    }
+  ]
+  name "supervisor"
+  controller "supervisor"
+  supervisor TRUE
 }
 Solid {
   translation 0 0 0.01

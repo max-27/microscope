@@ -1,29 +1,25 @@
 """display controller."""
-
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
-from controller import Robot, Display
+from controller import Robot, Receiver
 import cv2
-
-# create the Robot instance.
 
 robot = Robot()
 timestep = int(robot.getBasicTimeStep())
 
+receiver = robot.getDevice("receiver")
+receiver.enable(timestep)
+
 camera = robot.getDevice("camera")
 camera.enable(timestep)
-
-distance_sensor = robot.getDevice("distance sensor")
-distance_sensor.enable(timestep)
 
 def adjust_focal_distance(focal_distance: float):
     camera.setFocalDistance(focal_distance)
 
-def get_curr_distance():
-    return distance_sensor.getValue()/1000
-
 i = 0
+t = 0
 while robot.step(32) != -1:
-    print(get_curr_distance())
+    if receiver.getQueueLength() != 0 and t==0:
+        msg = receiver.getData()
+        print(msg)
+        t =1
     i += 1
  
