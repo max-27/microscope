@@ -1,0 +1,75 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.07210853784060298 0.9868235673679641 0.14484338320287768 4.013252522084294
+  position -0.6216868652957253 0.506516573809671 -0.5856723413845756
+}
+TexturedBackgroundLight {
+}
+TexturedBackground {
+}
+RectangleArena {
+}
+Robot {
+  translation 0 0.2 0
+  children [
+    Display {
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColorMap ImageTexture {
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry Rectangle {
+          }
+        }
+      ]
+      width 500
+      height 500
+    }
+  ]
+  name "robot display"
+  controller "display"
+}
+Robot {
+  translation 0 0.2 -0.2
+  rotation 0 1 0 3.1413
+  children [
+    DistanceSensor {
+    }
+    Camera {
+      fieldOfView 0.65
+      width 4000
+      height 3000
+      lens Lens {
+        radialCoefficients -0.2 -0.1
+      }
+      focus Focus {
+        focalDistance 0.14
+        focalLength 0.1
+        maxFocalDistance 1
+        minFocalDistance 0.1
+      }
+    }
+  ]
+  controller "camera"
+}
+Solid {
+  translation 0 0 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.001
+      }
+    }
+  ]
+  name "slide background"
+}
