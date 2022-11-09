@@ -21,7 +21,9 @@ class CameraRobot:
         self.camera.enable(self.timestep)
         self.receiver = self.robot.getDevice("receiver")
         self.receiver.enable(self.timestep)
+        self.receiver.setChannel(CAMERA_CHANNEL)
         self.emitter = self.robot.getDevice("emitter")
+        self.emitter.setChannel(CAMERA_CHANNEL)
 
     def adjust_focal_distance(self, focal_distance: float) -> None:
         self.camera.setFocalDistance(focal_distance)
@@ -29,15 +31,13 @@ class CameraRobot:
     def capture_image(self, counter: int) -> None:
         file_name = os.path.join(ROOT_PATH, "images", f"sample{counter}_{Z_POSITIONS[counter]}.jpg")
         self.camera.saveImage(filename=file_name, quality=100)
-        msg = f"Next position slice position: {counter+1}"
-        self.emitter.setChannel(CAMERA_CHANNEL)
+        msg = f"Next position index: {counter+1}"
         self.emitter.send(bytes(msg, "utf-8"))
         
 
 i = 0
 camera = CameraRobot()
 while camera.robot.step(32) != -1:
-    camera.receiver.setChannel(CAMERA_CHANNEL)
     if camera.receiver.getQueueLength() > 0:
         msg = camera.receiver.getData().decode("utf-8")
         print(msg)

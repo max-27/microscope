@@ -19,7 +19,7 @@ class DataLoader:
             self.counter += 1
             return cv2.imread(img_name)
         else:
-            raise IndexError("All have been loaded")
+            raise IndexError("All images have been loaded")
 
 if __name__ == "__main__":
     d = DataLoader("/mnt/data1/max/microscope/images")

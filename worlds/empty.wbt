@@ -69,10 +69,12 @@ DEF CAMERA Robot {
 Robot {
   children [
     Receiver {
-      name "receiver(1)"
+      name "receiver_camera"
+      channel 4
     }
     Receiver {
-      channel 4
+      name "receiver_display"
+      channel 3
     }
     Emitter {
       channel 4

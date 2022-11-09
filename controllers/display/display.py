@@ -42,8 +42,7 @@ while display.robot.step(32) != -1:
         msg = display.receiver.getData().decode("utf-8")
         print(msg)
         display.receiver.nextPacket()
-        sample_number = msg.split(":")[-1]
-        display.display_img(int(sample_number))
+        display.display_img()
         
     i += 1
  
