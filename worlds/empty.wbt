@@ -16,8 +16,10 @@ Robot {
   translation 0 0.2 0
   children [
     Receiver {
+      channel 3
     }
     Emitter {
+      channel 3
     }
     Display {
       children [
@@ -44,8 +46,10 @@ DEF CAMERA Robot {
   rotation 0 1 0 3.1413
   children [
     Receiver {
+      channel 4
     }
     Emitter {
+      channel 4
     }
     Camera {
       fieldOfView 0.66
@@ -65,8 +69,13 @@ DEF CAMERA Robot {
 Robot {
   children [
     Receiver {
+      name "receiver(1)"
+    }
+    Receiver {
+      channel 4
     }
     Emitter {
+      channel 4
     }
   ]
   name "supervisor"

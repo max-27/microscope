@@ -40,6 +40,7 @@ while display.robot.step(32) != -1:
     display.receiver.setChannel(DISPLAY_CHANNEL)
     if display.receiver.getQueueLength() > 0:
         msg = display.receiver.getData().decode("utf-8")
+        print(msg)
         display.receiver.nextPacket()
         sample_number = msg.split(":")[-1]
         display.display_img(int(sample_number))

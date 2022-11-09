@@ -40,8 +40,9 @@ while camera.robot.step(32) != -1:
     camera.receiver.setChannel(CAMERA_CHANNEL)
     if camera.receiver.getQueueLength() > 0:
         msg = camera.receiver.getData().decode("utf-8")
+        print(msg)
         camera.receiver.nextPacket()
-        slice_number = msg.split(":")[-1]
-        camera.capture_image(int(slice_number))
+        slice_number = int(msg.split(":")[-1])
+        camera.capture_image(slice_number)
     i += 1
  
