@@ -19,11 +19,11 @@ class SupervisorRobot:
         self.camera_node = self.robot.getFromDef("CAMERA")
         self.translation_field = self.camera_node.getField("translation")
     
-    def translate_camera(self, slice_counter: int) -> None:
+    def translate_camera(self, slice_counter: int, sample_num: int) -> None:
         new_z_position = Z_POSITIONS[slice_counter]
         new_camera_position = [0, 0.2, new_z_position]
         self.translation_field.setSFVec3f(new_camera_position)
-        msg = f"Moved camera to position: {slice_counter}"
+        msg = f"Sample number: {sample_num}: Moved camera to position: {slice_counter}"
         self.emitter.setChannel(CAMERA_CHANNEL)
         self.emitter.send(bytes(msg, "utf-8"))
 
@@ -36,7 +36,7 @@ while supervisor.robot.step(32) != -1:
         supervisor.receiver_display.nextPacket()
         print(msg)
         sample_counter = int(msg.split(":")[-1])
-        supervisor.translate_camera(0)
+        supervisor.translate_camera(0, sample_counter)
     if supervisor.receiver_camera.getQueueLength() > 0:
         print(supervisor.receiver_camera.getQueueLength())
         msg = supervisor.receiver_camera.getData().decode()
@@ -44,7 +44,7 @@ while supervisor.robot.step(32) != -1:
         print(msg)
         z_position_index = int(msg.split(":")[-1])
         if z_position_index < len(Z_POSITIONS):
-            supervisor.translate_camera(z_position_index)
+            supervisor.translate_camera(z_position_index, sample_counter)
         else:
             supervisor.emitter.setChannel(DISPLAY_CHANNEL)
             msg = f"Load next image: {sample_counter+1}"

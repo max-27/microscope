@@ -18,6 +18,7 @@ class DisplayRobot(DataLoader):
         self.emitter = self.robot.getDevice("emitter")
         self.receiver = self.robot.getDevice("receiver")
         self.receiver.enable(self.timestep)
+        self.receiver.setChannel(DISPLAY_CHANNEL)
 
     def display_img(self) -> None:
         img = self.load_image()
@@ -37,7 +38,6 @@ display = DisplayRobot("/home/maf4031/Downloads")
 while display.robot.step(32) != -1:
     if i == 4:
         display.display_img()
-    display.receiver.setChannel(DISPLAY_CHANNEL)
     if display.receiver.getQueueLength() > 0:
         msg = display.receiver.getData().decode("utf-8")
         print(msg)

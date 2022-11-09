@@ -10,7 +10,7 @@ import io
 import os
 
 from scripts.get_root import ROOT_PATH
-from scripts.constants import Z_POSITIONS, CAMERA_CHANNEL
+from scripts.constants import Z_POSITIONS, CAMERA_CHANNEL, DISPLAY_CHANNEL
 
 
 class CameraRobot:
@@ -28,10 +28,10 @@ class CameraRobot:
     def adjust_focal_distance(self, focal_distance: float) -> None:
         self.camera.setFocalDistance(focal_distance)
     
-    def capture_image(self, counter: int) -> None:
-        file_name = os.path.join(ROOT_PATH, "images", f"sample{counter}_{Z_POSITIONS[counter]}.jpg")
+    def capture_image(self, slice_counter: int, sample_num: int) -> None:
+        file_name = os.path.join(ROOT_PATH, "images", f"sample{sample_num}_{Z_POSITIONS[slice_counter]}.jpg")
         self.camera.saveImage(filename=file_name, quality=100)
-        msg = f"Next position index: {counter+1}"
+        msg = f"Next position index: {slice_counter+1}"
         self.emitter.send(bytes(msg, "utf-8"))
         
 
@@ -43,6 +43,7 @@ while camera.robot.step(32) != -1:
         print(msg)
         camera.receiver.nextPacket()
         slice_number = int(msg.split(":")[-1])
-        camera.capture_image(slice_number)
+        sample_num = int(msg.split(":")[1])
+        camera.capture_image(slice_number, sample_num)
     i += 1
  
