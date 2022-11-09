@@ -28,7 +28,7 @@ class DisplayRobot(DataLoader):
         self.display.imagePaste(ir, 0, 0, False)
         self.display.imageDelete(ir)
         msg = f"Displaying sample number: {self.counter}"
-        self.emitter.set_channel(DISPLAY_CHANNEL)
+        self.emitter.setChannel(DISPLAY_CHANNEL)
         self.emitter.send(bytes(msg, "utf-8"))
 
 
@@ -37,7 +37,7 @@ display = DisplayRobot("/home/maf4031/Downloads")
 while display.robot.step(32) != -1:
     if i == 4:
         display.display_img()
-    display.receiver.set_channel(DISPLAY_CHANNEL)
+    display.receiver.setChannel(DISPLAY_CHANNEL)
     if display.receiver.getQueueLength() > 0:
         msg = display.receiver.getData().decode("utf-8")
         display.receiver.nextPacket()

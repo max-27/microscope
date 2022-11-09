@@ -21,21 +21,21 @@ class SupervisorRobot:
         new_camera_position = [0, 0.2, new_z_position]
         self.translation_field.setSFVec3f(new_camera_position)
         msg = f"Moved camera to position: {slice_counter}"
-        self.emitter.set_channel(CAMERA_CHANNEL)
+        self.emitter.setChannel(CAMERA_CHANNEL)
         self.emitter.send(bytes(msg, "utf-8"))
 
 
 i = 0
 supervisor = SupervisorRobot()
 while supervisor.robot.step(32) != -1:
-    supervisor.receiver.set_channel(DISPLAY_CHANNEL)
+    supervisor.receiver.setChannel(DISPLAY_CHANNEL)
     if supervisor.receiver.getQueueLength() > 0:
         msg = supervisor.receiver.getData().decode("utf-8")
         supervisor.receiver.nextPacket()
         sample_number = msg.split(":")[-1]
         # translate camera to initial position
         supervisor.translate_camera(0)
-    supervisor.receiver.set_channel(CAMERA_CHANNEL)
+    supervisor.receiver.setChannel(CAMERA_CHANNEL)
     if supervisor.receiver.getQueueLength() > 0:
         msg = supervisor.receiver.getData().decode("utf-8")
         supervisor.receiver.nextPacket()
@@ -45,7 +45,7 @@ while supervisor.robot.step(32) != -1:
             supervisor.translate_camera(slice_number)
         else:
             print("Finished capturing all slices")
-            supervisor.emitter.set_channel(DISPLAY_CHANNEL)
+            supervisor.emitter.setChannel(DISPLAY_CHANNEL)
             msg = "Finished capturing all slices of sample: {sample_number}"
             supervisor.emitter.send(bytes(msg, "utf-8"))
     i += 1

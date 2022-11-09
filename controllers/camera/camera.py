@@ -1,4 +1,7 @@
 """display controller."""
+import sys 
+sys.path.append("/mnt/data1/max/microscope")
+
 from controller import Robot, Receiver, Emitter
 import PIL.Image
 import struct
@@ -27,14 +30,14 @@ class CameraRobot:
         file_name = os.path.join(ROOT_PATH, "images", f"sample{counter}_{Z_POSITIONS[counter]}.jpg")
         self.camera.saveImage(filename=file_name, quality=100)
         msg = f"Next position slice position: {counter+1}"
-        self.emitter.set_channel(CAMERA_CHANNEL)
+        self.emitter.setChannel(CAMERA_CHANNEL)
         self.emitter.send(bytes(msg, "utf-8"))
         
 
 i = 0
 camera = CameraRobot()
 while camera.robot.step(32) != -1:
-    camera.receiver.set_channel(CAMERA_CHANNEL)
+    camera.receiver.setChannel(CAMERA_CHANNEL)
     if camera.receiver.getQueueLength() > 0:
         msg = camera.receiver.getData().decode("utf-8")
         camera.receiver.nextPacket()
