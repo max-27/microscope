@@ -15,6 +15,10 @@ RectangleArena {
 Robot {
   translation 0 0.2 0
   children [
+    Receiver {
+    }
+    Emitter {
+    }
     Display {
       children [
         Shape {
@@ -47,9 +51,6 @@ DEF CAMERA Robot {
       fieldOfView 0.66
       width 4000
       height 3000
-      lens Lens {
-        radialCoefficients -0.2 -0.1
-      }
       focus Focus {
         focalDistance 0.6
         focalLength 0.4
