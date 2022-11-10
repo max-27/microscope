@@ -30,7 +30,8 @@ class CameraRobot:
         self.num_dir = self.count_dir()
 
     def adjust_focal_distance(self, focal_distance: float) -> None:
-        self.camera.setFocalDistance(focal_distance)
+        print("Set focal distance to:", focal_distance)
+        self.camera.setFocalDistance(0.05)
     
     def capture_image(self, slice_counter: int, sample_num: int) -> None:
         folder_path = os.path.join(self.dir, f"run_{self.num_dir}", f"sample{sample_num}")
@@ -48,6 +49,8 @@ class CameraRobot:
 i = 0
 camera = CameraRobot()
 while camera.robot.step(32) != -1:
+    if i == 4:
+        camera.adjust_focal_distance(abs(Z_POSITIONS[0]))
     if camera.receiver.getQueueLength() > 0:
         msg = camera.receiver.getData().decode("utf-8")
         camera.receiver.nextPacket()

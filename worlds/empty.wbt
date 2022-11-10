@@ -52,14 +52,14 @@ DEF CAMERA Robot {
       channel 4
     }
     Camera {
-      fieldOfView 0.66
+      fieldOfView 2.4
       width 4000
       height 3000
       focus Focus {
-        focalDistance 0.6
-        focalLength 0.4
+        focalDistance 0.0495
+        focalLength 0.001
         maxFocalDistance 1
-        minFocalDistance 0.1
+        minFocalDistance 0.01
       }
     }
   ]
@@ -70,6 +70,7 @@ Robot {
   children [
     Receiver {
       name "receiver_super"
+      channel 2
     }
     Receiver {
       name "receiver_camera"
@@ -80,7 +81,7 @@ Robot {
       channel 3
     }
     Emitter {
-      channel 3
+      channel 4
     }
   ]
   name "supervisor"
