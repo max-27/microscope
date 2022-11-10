@@ -42,7 +42,11 @@ while display.robot.step(32) != -1:
         msg = display.receiver.getData().decode("utf-8")
         print(msg)
         display.receiver.nextPacket()
-        display.display_img()
-        
+        if display.counter < len(display):
+            display.display_img()
+        else:
+            display.emitter.setChannel(SUPERVISOR_CHANNEL)
+            display.emitter.send(bytes("0", "utf-8"))
+            break
     i += 1
  
