@@ -15,6 +15,12 @@ RectangleArena {
 Robot {
   translation 0 0.2 0
   children [
+    Receiver {
+      channel 3
+    }
+    Emitter {
+      channel 3
+    }
     Display {
       children [
         Shape {
@@ -40,21 +46,20 @@ DEF CAMERA Robot {
   rotation 0 1 0 3.1413
   children [
     Receiver {
+      channel 4
     }
     Emitter {
+      channel 4
     }
     Camera {
-      fieldOfView 0.66
+      fieldOfView 2.4
       width 4000
       height 3000
-      lens Lens {
-        radialCoefficients -0.2 -0.1
-      }
       focus Focus {
-        focalDistance 0.6
-        focalLength 0.4
+        focalDistance 0.0495
+        focalLength 0.001
         maxFocalDistance 1
-        minFocalDistance 0.1
+        minFocalDistance 0.01
       }
     }
   ]
@@ -64,8 +69,19 @@ DEF CAMERA Robot {
 Robot {
   children [
     Receiver {
+      name "receiver_super"
+      channel 2
+    }
+    Receiver {
+      name "receiver_camera"
+      channel 4
+    }
+    Receiver {
+      name "receiver_display"
+      channel 3
     }
     Emitter {
+      channel 4
     }
   ]
   name "supervisor"
