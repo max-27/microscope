@@ -5,7 +5,7 @@ sceneTreePerspectives: 000000ff0000000100000002000000c0000000fa01000000020100000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 2 "controllers/display/display.py" "controllers/camera/camera.py" "controllers/supervisor/supervisor.py"
+textFiles: 1 "controllers/display/display.py" "controllers/camera/camera.py" "controllers/supervisor/supervisor.py"
 consoles: Console:All:All
 consoles: Console:All:All
 consoles: Console:All:All
