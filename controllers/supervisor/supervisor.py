@@ -2,7 +2,7 @@ import sys
 sys.path.append("/mnt/data1/max/microscope")
 
 from controller import Supervisor, Emitter
-from scripts.constants import Z_POSITIONS, DISPLAY_CHANNEL, CAMERA_CHANNEL
+from scripts.constants import Z_POSITIONS, DISPLAY_CHANNEL, CAMERA_CHANNEL, SUPERVISOR_CHANNEL
 
 
 class SupervisorRobot:
@@ -10,52 +10,52 @@ class SupervisorRobot:
         self.robot = Supervisor()
         self.timestep = int(self.robot.getBasicTimeStep())
         self.emitter = self.robot.getDevice("emitter")
-        self.receiver = self.robot.getDevice("receiver")
-        self.receiver.enable(self.timestep)
+        self.receiver_display = self.robot.getDevice("receiver_display")
+        self.receiver_display.enable(self.timestep)
+        self.receiver_display.setChannel(DISPLAY_CHANNEL)
+        self.receiver_camera = self.robot.getDevice("receiver_camera")
+        self.receiver_camera.enable(self.timestep)
+        self.receiver_camera.setChannel(CAMERA_CHANNEL)
+        self.receiver_super = self.robot.getDevice("receiver_super")
+        self.receiver_super.enable(self.timestep)
+        self.receiver_super.setChannel(SUPERVISOR_CHANNEL)
         self.camera_node = self.robot.getFromDef("CAMERA")
         self.translation_field = self.camera_node.getField("translation")
-        self.counter = 0
     
-    def translate_camera(self) -> None:
-        print(f"Move camera to new z position: {Z_POSITIONS[image_counter]}")
-        new_z_position = Z_POSITIONS[self.counter]
+    def translate_camera(self, slice_counter: int, sample_num: int) -> None:
+        new_z_position = Z_POSITIONS[slice_counter]
         new_camera_position = [0, 0.2, new_z_position]
         self.translation_field.setSFVec3f(new_camera_position)
-        msg = f"Supervisor: {self.counter}"
-        self.emitter.set_channel(CAMERA_CHANNEL)
+        msg = f"Sample number: {sample_num}: Moved camera to position: {slice_counter}"
+        self.emitter.setChannel(CAMERA_CHANNEL)
         self.emitter.send(bytes(msg, "utf-8"))
-        self.counter += 1
 
 
 i = 0
-prev_slice_counter = -1
-image_counter = 0
-slice_counter = 0
 supervisor = SupervisorRobot()
-while supervisor.robot.step(timestep) != -1:
-    # translate camera to first position
-    if i == 20:
-        supervisor.translate_camera()
-        prev_slice_counter = 0
-    # waiting for camera before moving to next position
-    supervisor.receiver.set_channel(CAMERA_CHANNEL)
-    if supervisor.receiver.getDataSize() > 0:
-        msg = supervisor.receiver.getData().decode()
-        if msg.split(":")[0] == "Camera":
-            slice_counter = int(msg.split(":")[-1])
-            if slice_counter > prev_slice_counter and slice_counter < len(Z_POSITIONS):
-                supervisor.translate_camera()
-                prev_slice_counter = slice_counter
-            elif slice_counter == len(Z_POSITIONS):
-                prev_slice_counter = 0
-                image_counter += 1
-                msg = f"Supervisor: {image_counter}"
-                supervisor.emitter.set_channel(DISPLAY_CHANNEL)
-                supervisor.emitter.send(bytes(msg, "utf-8"))
-    supervisor.receiver.set_channel(DISPLAY_CHANNEL)
-    if supervisor.receiver.getDataSize() > 0:
-        msg = supervisor.receiver.getData().decode()
-        if int(msg.split(":")[-1]) == image_counter:
-            
-
+while supervisor.robot.step(32) != -1:
+    if supervisor.receiver_display.getQueueLength() > 0:
+        msg = supervisor.receiver_display.getData().decode()
+        supervisor.receiver_display.nextPacket()
+        print(msg)
+        sample_counter = int(msg.split(":")[-1])
+        supervisor.translate_camera(0, sample_counter)
+    if supervisor.receiver_camera.getQueueLength() > 0:
+        msg = supervisor.receiver_camera.getData().decode()
+        supervisor.receiver_camera.nextPacket()
+        print(msg)
+        z_position_index = int(msg.split(":")[-1])
+        if z_position_index < len(Z_POSITIONS):
+            supervisor.translate_camera(z_position_index, sample_counter)
+        else:
+            supervisor.emitter.setChannel(DISPLAY_CHANNEL)
+            msg = f"Load next image: {sample_counter+1}"
+            supervisor.emitter.send(bytes(msg, "utf-8"))
+    if supervisor.receiver_super.getQueueLength() > 0:
+        msg = supervisor.receiver_super.getData().decode()
+        supervisor.receiver_super.nextPacket()
+        if msg == "0":
+            supervisor.emitter.setChannel(CAMERA_CHANNEL)
+            supervisor.emitter.send(bytes("0", "utf-8"))
+            break
     i += 1

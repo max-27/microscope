@@ -18,6 +18,7 @@ class DisplayRobot(DataLoader):
         self.emitter = self.robot.getDevice("emitter")
         self.receiver = self.robot.getDevice("receiver")
         self.receiver.enable(self.timestep)
+        self.receiver.setChannel(DISPLAY_CHANNEL)
 
     def display_img(self) -> None:
         img = self.load_image()
@@ -27,25 +28,25 @@ class DisplayRobot(DataLoader):
         ir = self.display.imageNew(img, Display.BGRA, w, h)
         self.display.imagePaste(ir, 0, 0, False)
         self.display.imageDelete(ir)
-        msg = f"Display: {self.counter}"
-        self.emitter.set_channel(DISPLAY_CHANNEL)
+        msg = f"Displaying sample number: {self.counter}"
+        self.emitter.setChannel(DISPLAY_CHANNEL)
         self.emitter.send(bytes(msg, "utf-8"))
 
 
 i = 0
-pre_image_counter = 0
 display = DisplayRobot("/home/maf4031/Downloads")
 while display.robot.step(32) != -1:
     if i == 4:
         display.display_img()
-    # wait for supervisor to display next image
-    display.receiver.set_channel(DISPLAY_CHANNEL)
-    if display.receiver.getDataSize() > 0:
-        msg = display.receiver.getData().decode()
-        image_counter = int(msg.split(":")[-1])
-        if image_counter > pre_image_counter:
+    if display.receiver.getQueueLength() > 0:
+        msg = display.receiver.getData().decode("utf-8")
+        print(msg)
+        display.receiver.nextPacket()
+        if display.counter < len(display):
             display.display_img()
-            pre_image_counter = image_counter
-            image_counter += 1
+        else:
+            display.emitter.setChannel(SUPERVISOR_CHANNEL)
+            display.emitter.send(bytes("0", "utf-8"))
+            break
     i += 1
  
