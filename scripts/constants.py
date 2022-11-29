@@ -1,4 +1,6 @@
-Z_POSITIONS = [-0.03, -0.0311, -0.0312, -0.0299, -0.0298]
+import numpy as np
+
+Z_POSITIONS = np.arange(-2.7, -3.3, -0.001)/100
 
 SUPERVISOR_CHANNEL = 2
 DISPLAY_CHANNEL = 3

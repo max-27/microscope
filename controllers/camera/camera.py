@@ -14,6 +14,9 @@ from scripts.get_root import ROOT_PATH, DATA_PATH
 from scripts.constants import Z_POSITIONS, CAMERA_CHANNEL, DISPLAY_CHANNEL
 
 
+TEMP = "{:<08}"
+
+
 class CameraRobot:
     def __init__(self) -> None:
         self.robot = Robot()
@@ -26,6 +29,7 @@ class CameraRobot:
         self.emitter = self.robot.getDevice("emitter")
         self.emitter.setChannel(CAMERA_CHANNEL)
         self.dir = DATA_PATH
+        print(DATA_PATH)
         Path(self.dir).mkdir(parents=True, exist_ok=True)
         self.num_dir = self.count_dir()
 
@@ -36,7 +40,8 @@ class CameraRobot:
     def capture_image(self, slice_counter: int, sample_num: int) -> None:
         folder_path = os.path.join(self.dir, f"run_{self.num_dir}", f"sample{sample_num}")
         Path(folder_path).mkdir(parents=True, exist_ok=True)
-        file_name = os.path.join(folder_path, f"{Z_POSITIONS[slice_counter]}.jpg")
+        position = TEMP.format(f"{abs(Z_POSITIONS[slice_counter]):.4}")
+        file_name = os.path.join(folder_path, f"{position}.jpg")
         self.camera.saveImage(filename=file_name, quality=100)
         msg = f"Next position index: {slice_counter+1}"
         self.emitter.send(bytes(msg, "utf-8"))
@@ -50,7 +55,8 @@ i = 0
 camera = CameraRobot()
 while camera.robot.step(32) != -1:
     if i == 4:
-        camera.adjust_focal_distance(abs(Z_POSITIONS[0]))
+        start_distance = Z_POSITIONS[int(len(Z_POSITIONS)/2)]
+        camera.adjust_focal_distance(abs(start_distance))
     if camera.receiver.getQueueLength() > 0:
         msg = camera.receiver.getData().decode("utf-8")
         camera.receiver.nextPacket()

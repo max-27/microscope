@@ -3,8 +3,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.07210853784060298 0.9868235673679641 0.14484338320287768 4.013252522084294
-  position -0.6216868652957253 0.506516573809671 -0.5856723413845756
+  orientation 0.03985784627016415 0.9901793026236507 0.1340011221835271 3.8147057464175997
+  position -0.5945657786533999 0.5551833821536759 -0.780266132745405
 }
 TexturedBackgroundLight {
 }
@@ -31,11 +31,12 @@ Robot {
             metalness 0
           }
           geometry Rectangle {
+            size 0.177777 0.1
           }
         }
       ]
-      width 500
-      height 500
+      width 1280
+      height 720
     }
   ]
   name "robot display"
@@ -53,10 +54,10 @@ DEF CAMERA Robot {
     }
     Camera {
       fieldOfView 2.4
-      width 4000
-      height 3000
+      width 1280
+      height 720
       focus Focus {
-        focalDistance 0.0495
+        focalDistance 0.05
         focalLength 0.001
         maxFocalDistance 1
         minFocalDistance 0.01
